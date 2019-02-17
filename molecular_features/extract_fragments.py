@@ -356,8 +356,8 @@ _load_functions = {
 }
 
 
-def extract_fragments(input_files: list, input_type: str, output_file: str
-                      , extraction_options: dict) -> dict:
+def extract_fragments(input_files: list, input_type: str, output_file: str,
+                      extraction_options: dict) -> dict:
     """Extract fragments from molecules and write them to output JSON file.
         The extraction_options['fragments'] must be a list with objects describing
         fragments to extract, see _read_configuration for more details.
