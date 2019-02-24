@@ -129,8 +129,8 @@ class TestCalc(unittest.TestCase):
         size = 3
         molecule = rdkit.Chem.MolFromSmiles("C[C@H](O)c1ccccc1")
         options = {
-            'kekule': False,
-            'isomeric': True
+            "kekule": False,
+            "isomeric": True
         }
         result = [{"smiles": "c1ccccc1", "index": 742000539, "type": "ECFP", "size": 3},
                   {"smiles": "c1cccc(C)c1", "index": 997097697, "type": "ECFP", "size": 3},
