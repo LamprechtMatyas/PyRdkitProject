@@ -360,16 +360,22 @@ def extract_fragments(input_files: list, input_type: str, output_file: str,
     with open(output_file, "w") as output_stream:
         for path in input_files:
             for molecule in _LOAD_FUNCTIONS[input_type](path):
-                item = {
-                    "name": molecule.GetProp("_Name"),
-                    "smiles": rdkit.Chem.MolToSmiles(molecule),
-                    "fragments": extract_fragments_from_molecule(
-                        molecule, extraction_options["fragments"],
-                        extraction_options)
-                }
-                total_fragments += len(item["fragments"])
-                # Append to output.
-                append_object_to_json(output_stream, item, holder)
+                line = molecule.GetProp("_Name")
+                line = line.split(",")
+                if len(line) != 2:
+                    logging.info("Wrong input")
+                else:
+                    item = {
+                        "name": line[0],
+                        "smiles": rdkit.Chem.MolToSmiles(molecule),
+                        "active": line[1],
+                        "fragments": extract_fragments_from_molecule(
+                            molecule, extraction_options["fragments"],
+                            extraction_options)
+                    }
+                    total_fragments += len(item["fragments"])
+                    # Append to output.
+                    append_object_to_json(output_stream, item, holder)
     # Log nad return summary.
     logging.info("Report")
     logging.info("\tfragments total: %d", total_fragments)
@@ -406,22 +412,6 @@ def _main():
 
 if __name__ == "__main__":
     _main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
