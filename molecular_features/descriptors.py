@@ -458,27 +458,36 @@ def compute_descriptors(input_file: str, output_file: str, use_fragments: bool,
     counter = 0
     with open(output_file, "w") as stream:
         stream.write("smiles,")
+        if use_fragments:
+            stream.write("index,")
         stream.write(",".join(used_features_names))
         stream.write("\n")
         counter_step = 10
         with open(input_file, "r") as streami:
             for line in streami:
                 molecule = json.loads(line)
-                smiles_set = set()
+                smiles_list = []
+                index_list = []
+                position = 0
                 if use_fragments:
                     for fragment in molecule["fragments"]:
-                        smiles_set.add(fragment["smiles"])
-                    smiles_set = sorted(smiles_set)
+                        smiles_list.append(fragment["smiles"])
+                        index_list.append(fragment["index"])
                 else:
-                    smiles_set.add(molecule["smiles"])
-                for smiles in smiles_set:
+                    smiles_list.append(molecule["smiles"])
+                for smiles in smiles_list:
                     if counter % counter_step == 0:
-                        logging.info("%d/%d", counter, len(smiles_set))
-                    counter += 1
+                        logging.info("%d/%d", counter, len(smiles_list))
+
                     # SMILES.
                     stream.write("\"")
                     stream.write(smiles)
                     stream.write("\",")
+                    if use_fragments:
+                        stream.write(str(index_list[position]))
+                        stream.write(",")
+                    position += 1
+                    counter += 1
                     # Construct molecule, compute and write properties.
                     molecule = rdkit.Chem.MolFromSmiles(str(smiles), sanitize=False)
                     # Do not kekulize molecule.
@@ -514,13 +523,5 @@ def _main():
 
 if __name__ == "__main__":
     _main()
-
-
-
-
-
-
-
-
 
 
